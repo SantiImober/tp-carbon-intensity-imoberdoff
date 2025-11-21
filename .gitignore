@@ -1,0 +1,7 @@
+.venv/
+datalake/
+exports/
+figures/
+.env
+__pycache__/
+*.pyc

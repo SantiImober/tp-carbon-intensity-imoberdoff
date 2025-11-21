@@ -1,0 +1,6 @@
+requests
+pandas
+deltalake
+python-dotenv
+pyarrow
+matplotlib
