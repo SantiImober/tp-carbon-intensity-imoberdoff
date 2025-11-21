@@ -72,3 +72,74 @@ Archivo: `tp3_vistas.py`
 ---
 
 # 📂 Estructura del Data Lake
+
+El Data Lake sigue el modelo clásico **bronze → silver**, organizado por fuente y entidad:
+
+datalake/
+bronze/
+api_carbon_intensity/
+intensity/
+\_delta_log/
+part-0000-...
+factors/
+\_delta_log/
+part-0000-...
+silver/
+api_carbon_intensity/
+intensity/
+\_delta_log/
+part-0000-...
+intensity_daily/
+\_delta_log/
+part-0000-...
+factors/
+\_delta_log/
+part-0000-...
+
+# ▶️ Cómo ejecutar el proyecto
+
+### 1. Crear entorno virtual
+
+python -m venv .venv
+.\.venv\Scripts\activate 2. Instalar dependencias
+pip install -r requirements.txt 3. Configurar variables en .env
+DATA_LAKE_PATH=./datalake
+BASE_URL=https://api.carbonintensity.org.uk 4. Ejecutar el pipeline
+python tp1_extraccion.py # Extracción (bronze)
+python tp2_procesamiento.py # Procesamiento (silver)
+python tp3_vistas.py # Gráficos y vistas
+📊 Gráficos generados
+Los gráficos producidos en TP3 se guardan automáticamente en:
+
+/figures
+Archivos generados:
+
+daily_intensity_mean.png
+
+intensity_level_distribution.png
+
+factors_by_fuel.png
+
+🛠 Tecnologías utilizadas
+Python
+
+Requests
+
+Pandas
+
+Delta Lake (deltalake)
+
+PyArrow
+
+Matplotlib
+
+python-dotenv
+
+👨‍💻 Autor
+Santiago Imoberdoff
+Data Analyst
+Argentina 🇦🇷
+
+```
+
+```
