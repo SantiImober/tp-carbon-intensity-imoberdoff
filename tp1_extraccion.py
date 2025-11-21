@@ -67,12 +67,11 @@ BASE_URL: str = os.getenv("BASE_URL", "https://api.carbonintensity.org.uk")
 # Ruta principal del data lake (también configurable vía .env)
 DATA_LAKE_PATH: Path = Path(os.getenv("DATA_LAKE_PATH", BASE_DIR / "datalake"))
 
-# Armamos la estructura de carpetas pedida por el profe
 BRONZE_ROOT: Path = DATA_LAKE_PATH / "bronze" / "api_carbon_intensity"
 INTENSITY_PATH: Path = BRONZE_ROOT / "intensity"   # incremental
 FACTORS_PATH: Path = BRONZE_ROOT / "factors"       # full
 
-# Configuramos logging para tener trazabilidad del proceso
+# Configuracion logging para tener trazabilidad del proceso
 logging.basicConfig(
     level=logging.INFO,
     format="[%(asctime)s] [%(levelname)s] %(message)s",
@@ -84,18 +83,11 @@ logging.basicConfig(
 # ==============================
 
 def ensure_dir(path: Path) -> None:
-    """Crea la carpeta si no existe (típico en data engineering)."""
     path.mkdir(parents=True, exist_ok=True)
 
 
 def call_api(path: str, params: Optional[dict] = None, retries: int = 3) -> dict:
-    """
-    Llama a la API de forma robusta.
-    Incluye reintentos por si la red falla.
-
-    Este tipo de función demuestra buenas prácticas:
-    centralizamos los llamados a la API acá.
-    """
+   
     url = f"{BASE_URL}{path}"
 
     for attempt in range(1, retries + 1):
@@ -108,11 +100,11 @@ def call_api(path: str, params: Optional[dict] = None, retries: int = 3) -> dict
         except requests.RequestException as err:
             logging.warning(f"Error al llamar la API (intento {attempt}): {err}")
 
-            # Si es el último intento, lanzamos error
+            
             if attempt == retries:
                 raise
 
-            # Espera entre intentos
+            
             time.sleep(2)
 
 
@@ -123,7 +115,7 @@ def call_api(path: str, params: Optional[dict] = None, retries: int = 3) -> dict
 def get_intensity_range(from_iso: str, to_iso: str) -> pd.DataFrame:
     """
     Extrae intensidad de carbono entre dos fechas/hours ISO.
-    Esto es lo que usamos como extracción INCREMENTAL real.
+    Esto es lo que usamos como extracción INCREMENTAL.
     """
     path = f"/intensity/{from_iso}/{to_iso}"
     data = call_api(path)
@@ -134,7 +126,6 @@ def get_intensity_range(from_iso: str, to_iso: str) -> pd.DataFrame:
 def get_intensity_factors() -> pd.DataFrame:
     """
     Extrae el catálogo completo de factores.
-    Este endpoint es perfecto para una extracción FULL.
     """
     data = call_api("/intensity/factors")
     results = data.get("data", [])
